@@ -3,7 +3,10 @@ package com.mercus.mercus_backend.service;
 import com.mercus.mercus_backend.exception.APIException;
 import com.mercus.mercus_backend.exception.ResourceNotFoundException;
 import com.mercus.mercus_backend.model.Category;
+import com.mercus.mercus_backend.payload.CategoryDTO;
+import com.mercus.mercus_backend.payload.CategoryResponse;
 import com.mercus.mercus_backend.repository.CategoryRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +22,24 @@ public class CategoryServiceImpl implements CategoryService
     @Autowired
     private CategoryRepository categoryRepository;
 
+
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
-    public List<Category> getAllCategories() {
+    public CategoryResponse getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
-        if(categories.isEmpty()){
+        if (categories.isEmpty()) {
             throw new APIException("No category Create till now!!!");
 
         }
+        List<CategoryDTO> categoryDTOS = categories.stream()
+                .map(category -> modelMapper.map(category, CategoryDTO.class))
+                .toList();
+        CategoryResponse categoryResponse=new CategoryResponse();
+        categoryResponse.setContent(categoryDTOS);
 
-        return categoryRepository.findAll();
+        return categoryResponse;
     }
 
     @Override

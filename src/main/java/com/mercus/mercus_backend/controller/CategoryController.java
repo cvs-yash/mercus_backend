@@ -2,6 +2,7 @@ package com.mercus.mercus_backend.controller;
 
 
 import com.mercus.mercus_backend.model.Category;
+import com.mercus.mercus_backend.payload.CategoryResponse;
 import com.mercus.mercus_backend.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,9 @@ public class CategoryController
     private CategoryService categoryService;
 
     @GetMapping("/public/categories")
-    public ResponseEntity<List<Category>>  getAllCategories(){
-            List<Category> categories= categoryService.getAllCategories();
-            return new ResponseEntity<>(categories,HttpStatus.OK);
+    public ResponseEntity<CategoryResponse> getAllCategories(){
+            CategoryResponse categoryResponse= categoryService.getAllCategories();
+            return new ResponseEntity<>(categoryResponse,HttpStatus.OK);
 
     }
 
