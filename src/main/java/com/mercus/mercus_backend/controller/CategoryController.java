@@ -1,6 +1,7 @@
 package com.mercus.mercus_backend.controller;
 
 
+import com.mercus.mercus_backend.conifg.AppConstants;
 import com.mercus.mercus_backend.model.Category;
 import com.mercus.mercus_backend.payload.CategoryDTO;
 import com.mercus.mercus_backend.payload.CategoryResponse;
@@ -25,10 +26,12 @@ public class CategoryController
 
     @GetMapping("/public/categories")
     public ResponseEntity<CategoryResponse> getAllCategories(
-            @RequestParam(name="pageNumber") Integer pageNumber,
-            @RequestParam(name="pageSize") Integer pageSize
+            @RequestParam(name="pageNumber" , defaultValue = AppConstants.PAGE_NUMBER,required = false) Integer pageNumber,
+            @RequestParam(name="pageSize",defaultValue = AppConstants.PAGE_SIZE,required = false) Integer pageSize,
+            @RequestParam(name="sortBy",defaultValue = AppConstants.SORT_CATEGORIES_BY,required = false) String sortBy,
+            @RequestParam(name="sortOrder",defaultValue = AppConstants.SORT_DIR,required = false) String sortOrder
     ){
-            CategoryResponse categoryResponse= categoryService.getAllCategories(pageNumber,pageSize);
+            CategoryResponse categoryResponse= categoryService.getAllCategories(pageNumber,pageSize,sortBy,sortOrder);
             return new ResponseEntity<>(categoryResponse,HttpStatus.OK);
 
     }
