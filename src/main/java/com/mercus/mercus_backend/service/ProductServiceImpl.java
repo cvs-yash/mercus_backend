@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements  ProductService{
@@ -29,9 +28,11 @@ public class ProductServiceImpl implements  ProductService{
 
 
     @Override
-    public ProductDTO addProduct(Long categoryId, Product product) {
+    public ProductDTO addProduct(Long categoryId,  ProductDTO productDTO) {
         Category category= categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category","Category ID not found",categoryId));
+
+        Product product = modelMapper.map(productDTO , Product.class);
         product.setCategory(category);
 
         product.setImage("default.png");
@@ -78,10 +79,12 @@ public class ProductServiceImpl implements  ProductService{
     }
 
     @Override
-    public ProductDTO updateProduct(Product product, Long productId) {
+    public ProductDTO updateProduct( ProductDTO productDTO, Long productId) {
         //get the existing products from the db
         Product productFromDB = productRepository.findById(productId)
                 .orElseThrow(()-> new ResourceNotFoundException("Product","productId",productId));
+
+        Product product = modelMapper.map(productDTO, Product.class);
         //update the product info the one in request body
         productFromDB.setProductName(product.getProductName());
         productFromDB.setDescription(product.getDescription());
@@ -93,6 +96,14 @@ public class ProductServiceImpl implements  ProductService{
         //save to db
          Product savedProduct =  productRepository.save(productFromDB);
          return modelMapper.map(savedProduct,ProductDTO.class);
+    }
+
+    @Override
+    public ProductDTO deleteProduct(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(()-> new ResourceNotFoundException("product","productId",productId));
+        productRepository.delete(product);
+        return modelMapper.map(product, ProductDTO.class);
     }
 
 

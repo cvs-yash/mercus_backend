@@ -1,11 +1,10 @@
 package com.mercus.mercus_backend.service;
 
-import com.mercus.mercus_backend.model.Product;
 import com.mercus.mercus_backend.payload.ProductDTO;
 import com.mercus.mercus_backend.payload.ProductResponse;
 
 public interface ProductService {
-    ProductDTO addProduct(Long categoryId, Product product);
+    ProductDTO addProduct(Long categoryId, ProductDTO product);
 
     ProductResponse getAllProducts();
 
@@ -13,5 +12,7 @@ public interface ProductService {
 
     ProductResponse searchProductByKeyword(String keyword);
 
-    ProductDTO updateProduct(Product product, Long productId);
+    ProductDTO updateProduct(ProductDTO product, Long productId);
+
+    ProductDTO deleteProduct(Long productId);
 }
