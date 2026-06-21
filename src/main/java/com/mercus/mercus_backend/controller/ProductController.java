@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")
@@ -58,5 +61,15 @@ public class ProductController {
         return new ResponseEntity<>(deleteProductDTO,HttpStatus.OK);
 
     }
+
+
+    @PutMapping("/products/{productId}/image")
+    public ResponseEntity<ProductDTO> updateProductImage(@PathVariable Long productId,
+                                                         @RequestParam("image")MultipartFile image) throws IOException {
+       ProductDTO updateProduct =  productService.updateProudctImage(productId,image);
+        return new ResponseEntity<>(updateProduct , HttpStatus.OK);
+    }
+
+
 
 }

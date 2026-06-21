@@ -10,9 +10,16 @@ import com.mercus.mercus_backend.repository.CategoryRepository;
 import com.mercus.mercus_backend.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProductServiceImpl implements  ProductService{
@@ -25,6 +32,12 @@ public class ProductServiceImpl implements  ProductService{
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private FIleService fIleService;
+
+    @Value("${project.image}")
+    private String path;
 
 
     @Override
@@ -105,6 +118,30 @@ public class ProductServiceImpl implements  ProductService{
         productRepository.delete(product);
         return modelMapper.map(product, ProductDTO.class);
     }
+
+    @Override
+    public ProductDTO updateProudctImage(Long productId, MultipartFile image) throws IOException {
+        //get the product from the image
+        Product productFromDb = productRepository.findById(productId)
+                .orElseThrow(()-> new ResourceNotFoundException("Product","ProductId",productId));
+        //Upload image to the server  (slash directory)
+        //get the file name of uploaded image
+
+        String fileName = fIleService.uploadImage(path,image);
+
+        //Updating the new file name to the product
+        productFromDb.setImage(fileName);
+
+        //save the updated product
+        Product updatedProduct = productRepository.save(productFromDb);
+        //return dto after mapping the product to the DTO
+        return modelMapper.map(updatedProduct,ProductDTO.class);
+
+
+
+    }
+
+
 
 
 }
